@@ -1,1 +1,2 @@
+server/previ-agro-api/models/sarima_rain_model.pkl filter=lfs diff=lfs merge=lfs -text
 server/previ-agro-api/models/*.pkl filter=lfs diff=lfs merge=lfs -text
