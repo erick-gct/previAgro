@@ -1,0 +1,11 @@
+# nixpacks.toml
+
+[phases.install]
+# Le decimos a Nixpacks que instale git-lfs y haga el pull ANTES de construir la app.
+# Esta fase se ejecuta en un momento donde la información de Git aún está disponible.
+cmds = ["apt-get update && apt-get install -y git-lfs", "git lfs pull"]
+
+[start]
+# Comando para iniciar la aplicación una vez que todo esté construido.
+# Railway usa la variable $PORT automáticamente.
+cmd = "gunicorn app:app --bind 0.0.0.0:$PORT"
