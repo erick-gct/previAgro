@@ -11,8 +11,13 @@ import firebase_admin
 from firebase_admin import auth as fb_auth, credentials
 from services.prediction_service import get_rain_prediction # Importamos nuestra función
 import statsmodels.api as sm
+import json
+import base64
 
-cred = credentials.Certificate("./firebase-contra/clave-firebase.json")
+firebase_service_account = os.environ.get("FIREBASE_SERVICE_ACCOUNT")
+firebase_json = json.loads(base64.b64decode(firebase_service_account))
+
+cred = credentials.Certificate(firebase_json)
 firebase_admin.initialize_app(cred)
 
 # 1. Carga de variables de entorno
