@@ -45,7 +45,7 @@ export default function PerfilPage() {
     try{
       // Obtener token
       const user = auth.currentUser;
-      if (!user) throw new Error("Usuario no autenticado");
+      if (!user)  toast.error("La respuesta de la red no fue exitosa", {position: "top-right"}); 
       const idToken = await getIdToken(user);
       // Llamada PUT
       const res = await fetch("http://localhost:5000/api/profile", {
@@ -58,13 +58,14 @@ export default function PerfilPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "Error al actualizar perfil");
+        toast.error(data.error || "Error al actualizar perfil", {position: "top-right"});
+        //throw new Error(data.error || "Error al actualizar perfil");
       }
-      setSuccess("Perfil actualizado correctamente");
+      toast.success("Perfil Actualizado Correctamente", {position: "top-right"});
       setIsEditing(false);
 
     }catch (e: any) {
-      setError(e.message);
+       toast.error(e.message, {position: "top-right"});
     }
     console.log("Guardar cambios", form);
     setIsEditing(false);
@@ -101,6 +102,8 @@ export default function PerfilPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-200 px-4 py-4">
+          {/* Contenedor del toast */}
+        <ToastContainer />
       <div className="bg-white shadow-md rounded-lg p-10 w-full max-w-5xl animate-fade-in">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-bold text-left text-green-700">

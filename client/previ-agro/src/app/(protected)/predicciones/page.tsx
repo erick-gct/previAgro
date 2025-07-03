@@ -12,6 +12,9 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 // Un componente reutilizable para mostrar los resultados
 type Prediction = {
@@ -62,12 +65,13 @@ export default function Predictor() {
         `http://127.0.0.1:5000/api/predict?model=${modelType}&months=12`
       );
       if (!response.ok) {
-        throw new Error("La respuesta de la red no fue exitosa");
+        toast.error("La respuesta de la red no fue exitosa", {position: "top-right"});
+        //throw new Error("La respuesta de la red no fue exitosa");
       }
       const data = await response.json();
       setPredictions(data);
     } catch (err) {
-      setError(err.message);
+      toast.error(err.message, {position: "top-right"});
       setPredictions([]);
     } finally {
       setLoading(false);
@@ -76,6 +80,8 @@ export default function Predictor() {
 
   return (
     <div className="bg-gray-200 min-h-screen flex items-center justify-center">
+        {/* Contenedor del toast */}
+        <ToastContainer />
       <div className="bg-white shadow-xl rounded-2xl p-8 max-w-4xl w-full">
         {/* Título */}
         <h1 className="text-green-600 text-2xl font-bold mb-4 text-center">
@@ -156,9 +162,7 @@ export default function Predictor() {
             Cargando predicciones...
           </p>
         )}
-        {error && (
-          <p className="mt-6 text-red-600 text-center">Error: {error}</p>
-        )}
+   
 
         {predictions.length > 0 && (
           <div className="mt-8 py-8">

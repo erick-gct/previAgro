@@ -6,6 +6,7 @@ import { getIdToken, onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "../../lib/firebase";
 import Navbar from "../components/navbar";
 import { LoadingModal } from '../components/loading';
+import Footer from "../components/footer";
 
 interface Profile {
   nombre: string;
@@ -18,10 +19,6 @@ interface Profile {
   direccion: string;
   fecha_creacion: string;
 }
-
-// interface ProtectedLayoutProps {
-//   children: ReactNode;
-// }
 
 // 1) Creamos y exportamos el contexto
 export const ProfileContext = createContext<Profile | null>(null);
@@ -81,9 +78,20 @@ export default function ProtectedLayout({ children }: ProtectedLayoutProps ) {
 
   return (
     <ProfileContext.Provider value={profile}>
-      <div className="flex">
+      
+      <div className="flex min-h-screen ">
       <Navbar user={profile}/>
-      <main className="ml-64 p-6 w-full">{children}</main>
+      
+
+      <main className="flex-grow ml-64 p-6 w-full overflow-x-hidden">
+        
+        <div className="max-w-full overflow-x-hidden">
+          {children}
+        </div>
+        
+        </main>
+     
+     
       </div>
     </ProfileContext.Provider>
     
