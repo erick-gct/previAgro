@@ -14,8 +14,21 @@ import statsmodels.api as sm
 import json
 import base64
 
-firebase_service_account = os.environ.get("FIREBASE_SERVICE_ACCOUNT")
-firebase_json = json.loads(base64.b64decode(firebase_service_account))
+# ————— Inicialización de Firebase Admin con fallback local —————
+b64 = os.getenv("FIREBASE_SERVICE_ACCOUNT")
+
+if b64:
+    # En producción (Railway): decodifica base64
+    firebase_json = json.loads(base64.b64decode(b64))
+else:
+    # En desarrollo local: lee el JSON directamente
+    key_path = pathlib.Path(__file__).parent / "firebase-contra" / "clave-firebase.json"
+    with open(key_path, "r", encoding="utf-8") as f:
+        firebase_json = json.load(f)
+
+#Antiguo codigo de ayer 2&7&2025
+#firebase_service_account = os.environ.get("FIREBASE_SERVICE_ACCOUNT")
+#firebase_json = json.loads(base64.b64decode(firebase_service_account))
 
 cred = credentials.Certificate(firebase_json)
 firebase_admin.initialize_app(cred)
