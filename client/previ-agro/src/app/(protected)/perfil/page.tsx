@@ -4,7 +4,7 @@ import React, { useContext, useState } from "react";
 import { ProfileContext } from "../layout"; // si lo creas con Context API
 import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
-import { auth } from "../../../lib/firebase";
+import { auth } from '@/lib/firebase';
 import { getIdToken, onAuthStateChanged, User } from "firebase/auth";
 import "react-toastify/dist/ReactToastify.css";
 import { API_URL } from "@/lib/api";
