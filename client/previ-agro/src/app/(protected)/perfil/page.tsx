@@ -52,7 +52,10 @@ export default function PerfilPage() {
     try{
       // Obtener token
       const user = auth.currentUser;
-      if (!user)  toast.error("La respuesta de la red no fue exitosa", {position: "top-right"}); 
+      if (!user) {
+        toast.error("La respuesta de la red no fue exitosa", {position: "top-right"});
+        return;
+      }   
       const idToken = await getIdToken(user);
       // Llamada PUT
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile`, {
