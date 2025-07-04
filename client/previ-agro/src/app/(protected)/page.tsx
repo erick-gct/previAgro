@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { auth } from "../../lib/firebase";
+import { auth } from '@/lib/firebase';
 import LogoutButton from "../components/logout-buttom";
 import Navbar from "../components/navbar";
 import costaImage from "/assets/costa.png";
