@@ -14,7 +14,7 @@ import {
 } from "recharts";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { API_URL } from "@/lib/api";
+import { API_URL } from "../../../lib/api";
 
 // Un componente reutilizable para mostrar los resultados
 type Prediction = {
