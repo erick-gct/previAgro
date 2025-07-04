@@ -6,6 +6,7 @@ import { FaCalendarAlt } from 'react-icons/fa';
 import { LoadingModal } from '../components/loading'; // Importa el componente LoadingModal
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { API_URL } from "@/lib/api";
 
 
 export default function RegisterPage() {
@@ -59,7 +60,7 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/api/registrar", {
+      const res = await fetch(`${API_URL}/api/registrar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

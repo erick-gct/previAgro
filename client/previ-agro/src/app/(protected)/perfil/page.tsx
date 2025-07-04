@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { auth } from "../../../lib/firebase";
 import { getIdToken, onAuthStateChanged, User } from "firebase/auth";
 import "react-toastify/dist/ReactToastify.css";
+import { API_URL } from "@/lib/api";
 
 export default function PerfilPage() {
   const profile = useContext(ProfileContext);
@@ -48,7 +49,7 @@ export default function PerfilPage() {
       if (!user)  toast.error("La respuesta de la red no fue exitosa", {position: "top-right"}); 
       const idToken = await getIdToken(user);
       // Llamada PUT
-      const res = await fetch("http://localhost:5000/api/profile", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

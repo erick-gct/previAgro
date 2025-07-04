@@ -14,7 +14,7 @@ import {
 } from "recharts";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { API_URL } from "@/lib/api";
 
 // Un componente reutilizable para mostrar los resultados
 type Prediction = {
@@ -62,7 +62,7 @@ export default function Predictor() {
       setCurrentModel(`- ${modelType.toUpperCase()}`);
 
       const response = await fetch(
-        `http://127.0.0.1:5000/api/predict?model=${modelType}&months=12`
+        `${API_URL}/api/predict?model=${modelType}&months=12`
       );
       if (!response.ok) {
         toast.error("La respuesta de la red no fue exitosa", {position: "top-right"});
