@@ -3,7 +3,7 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getIdToken, onAuthStateChanged, User } from "firebase/auth";
-import { auth } from "../../lib/firebase";
+import { auth } from '@/lib/firebase';
 import Navbar from "../components/navbar";
 import { LoadingModal } from '../components/loading';
 import Footer from "../components/footer";
