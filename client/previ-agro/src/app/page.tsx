@@ -8,21 +8,19 @@ import { LoadingModal } from "../components/loading";
 
 export default function Home() {
   const router = useRouter();
-  const [checking, setChecking] = useState(true);
+
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
-        router.replace("/");
+        router.replace('/'); // iría al dashboard (protegido)
       } else {
-        router.replace("/login");
+        router.replace('/login');
       }
-      setChecking(false);
     });
+
     return () => unsub();
   }, [router]);
 
-  if (checking) return <LoadingModal />;
-
-  return null;
+  return <LoadingModal />;
 }
