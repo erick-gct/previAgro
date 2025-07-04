@@ -2,25 +2,27 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { LoadingModal } from "./components/loading";
+import { app } from "@/lib/firebase";
 
 export default function Home() {
   const router = useRouter();
+  const auth = getAuth(app);
 
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
-        router.replace('/'); // iría al dashboard (protegido)
+        router.push('/'); // iría al dashboard (protegido)
       } else {
-        router.replace('/login');
+        router.push('/login');
       }
     });
 
     return () => unsub();
-  }, [router]);
+  }, [router, auth]);
 
   return <LoadingModal />;
 }
