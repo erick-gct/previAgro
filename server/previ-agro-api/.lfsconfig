@@ -1,0 +1,4 @@
+[lfs]
+    # Desactiva la descarga automática de los objetos LFS
+    fetchinclude = ""
+    fetchexclude = "*"
