@@ -9,6 +9,6 @@ server/.venv/
 server/.env
 client/previ-agro/.next/
 
-# Ignorar credenciales de Firebase en el frontend
+
 
 
