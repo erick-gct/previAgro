@@ -15,9 +15,12 @@ export default function Home() {
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
+      
       if (user) {
+        console.log("Usuario detectado:", user);
         setLoading(false);
       } else {
+        console.log("no se encontro user");
         router.push("/login");
       }
 
