@@ -13,7 +13,7 @@ export default function Home() {
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
-        router.replace("/protected");
+        router.replace("/(protected)");
       } else {
         router.replace("/login");
       }
