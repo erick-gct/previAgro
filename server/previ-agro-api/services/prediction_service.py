@@ -3,22 +3,46 @@ import os
 import json
 import pandas as pd
 from prophet.serialize import model_from_json
+import requests
 
-
-# Obtener el path absoluto a la carpeta actual (services/)
+# --- Paths y URLs ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+LOCAL_SARIMA_PATH = os.path.normpath(os.path.join(BASE_DIR, '..', 'models', 'sarima_rain_model.pkl'))
+PROPHE_MODEL_PATH = os.path.normpath(os.path.join(BASE_DIR, '..', 'models', 'prophet_rain_model.json'))
 
-# Ruta absoluta al archivo del modelo SARIMA
-sarima_path = os.path.normpath(os.path.join(BASE_DIR, '..', 'models', 'sarima_rain_model.pkl'))
-prophet_path = os.path.normpath(os.path.join(BASE_DIR, '..', 'models', 'prophet_rain_model.json'))
+# URL pública al modelo SARIMA (GitHub Releases)
+SARIMA_MODEL_URL = os.getenv("SARIMA_MODEL_URL", "").strip()
+# Ruta temporal donde guardar el modelo descargado
+TMP_SARIMA_PATH = "/tmp/sarima_rain_model.pkl"
 
 
+def _ensure_sarima_model():
+    """
+    Garantiza que el modelo SARIMA esté disponible localmente.
+    Si existe la env var SARIMA_MODEL_URL, descarga desde ahí;
+    si no, usa el archivo local en models/.
+    """
+    if SARIMA_MODEL_URL:
+        # Descarga solo si no existe en /tmp
+        if not os.path.exists(TMP_SARIMA_PATH):
+            resp = requests.get(SARIMA_MODEL_URL, stream=True)
+            resp.raise_for_status()
+            with open(TMP_SARIMA_PATH, "wb") as f:
+                for chunk in resp.iter_content(chunk_size=8192):
+                    f.write(chunk)
+        return TMP_SARIMA_PATH
+    # Fallback local
+    if os.path.exists(LOCAL_SARIMA_PATH):
+        return LOCAL_SARIMA_PATH
+    raise FileNotFoundError("No se encontró el modelo SARIMA en local ni la variable SARIMA_MODEL_URL")
 
-# --- CARGAR LOS MODELOS UNA SOLA VEZ ---
-# Se cargan al iniciar la app para no leer los archivos en cada petición.
+# --- Carga de los modelos una sola vez ---
 print("Cargando modelos de predicción...")
-SARIMA_MODEL = joblib.load(sarima_path)
-with open(prophet_path, 'r') as fin:
+# SARIMA
+sarima_file = _ensure_sarima_model()
+SARIMA_MODEL = joblib.load(sarima_file)
+# Prophet
+with open(PROPHE_MODEL_PATH, 'r') as fin:
     PROPHET_MODEL = model_from_json(json.load(fin))
 print("Modelos cargados exitosamente.")
 
@@ -28,53 +52,41 @@ def get_rain_prediction(model_type: str, months_to_predict: int) -> list:
     Genera una predicción de lluvia usando el modelo especificado.
 
     Args:
-        model_type (str): El tipo de modelo a usar ('sarima' o 'prophet').
-        months_to_predict (int): El número de meses a predecir.
-
+        model_type (str): 'sarima' o 'prophet'.
+        months_to_predict (int): Número de meses a predecir.
     Returns:
-        list: Una lista de diccionarios con la fecha y el valor predicho.
+        list de {'date': 'YYYY-MM-DD', 'value': float}
     """
     predictions = []
 
     if model_type == 'sarima':
-        # Generar predicción con SARIMA
+        # Predicción SARIMA
         forecast = SARIMA_MODEL.get_forecast(steps=months_to_predict)
-        predicted_values = forecast.predicted_mean.values
-
-        # --- INICIO DEL PARCHE PARA EL ERROR 'strftime' ---
-        # Como el modelo devuelve un índice numérico, construiremos las fechas del futuro manualmente.
-
-        # 2. Obtener la última fecha de los datos con los que el modelo fue entrenado.
+        vals = forecast.predicted_mean.values
+        # Generar fechas futuras
         last_date = SARIMA_MODEL.model.data.row_labels[-1]
-
-        # 3. Crear un rango de fechas futuras, comenzando un mes después de la última fecha.
         future_dates = pd.date_range(
             start=last_date + pd.DateOffset(months=1),
             periods=months_to_predict,
-            freq='MS'  # 'MS' para inicio de mes, que es como entrenamos.
+            freq='MS'
         )
-
-        # 4. Unir nuestras fechas generadas con los valores predichos.
-        for date, value in zip(future_dates, predicted_values):
+        for date, value in zip(future_dates, vals):
             predictions.append({
-                "date": date.strftime('%Y-%m-%d'), # Ahora 'date' es un objeto de fecha garantizado.
-                "value": round(value, 2)
+                "date": date.strftime('%Y-%m-%d'),
+                "value": round(float(value), 2)
             })
-        # --- FIN DEL PARCHE ---
 
     elif model_type == 'prophet':
-        # Generar predicción con Prophet
+        # Predicción Prophet
         future = PROPHET_MODEL.make_future_dataframe(periods=months_to_predict, freq='MS')
         forecast = PROPHET_MODEL.predict(future)
-
-        # Extraer solo las fechas futuras y sus predicciones ('yhat')
-        predictions_df = forecast[['ds', 'yhat']].tail(months_to_predict)
-
-        # Formatear la salida
-        for _, row in predictions_df.iterrows():
+        df = forecast[['ds', 'yhat']].tail(months_to_predict)
+        for _, row in df.iterrows():
             predictions.append({
                 "date": row['ds'].strftime('%Y-%m-%d'),
-                "value": round(row['yhat'], 2)
+                "value": round(float(row['yhat']), 2)
             })
+    else:
+        raise ValueError("Modelo no soportado: debe ser 'sarima' o 'prophet'")
 
     return predictions
