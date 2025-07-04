@@ -55,7 +55,7 @@ export default function Predictor() {
   const [currentModel, setCurrentModel] = useState("");
 
   // Función que llama a la API. Ahora acepta el tipo de modelo como argumento.
-  const fetchPredictions = async (modelType) => {
+  const fetchPredictions = async (modelType: string) => {
     try {
       setLoading(true);
       setError(null);
