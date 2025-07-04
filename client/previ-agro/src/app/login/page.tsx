@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../lib/firebase"; // Asegúrate de que la ruta sea correcta
+import { auth } from '@/lib/firebase'; // Asegúrate de que la ruta sea correcta
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {LoadingModal} from "../components/loading";
