@@ -1,27 +1,15 @@
 'use client';
 
-import { createContext, ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getIdToken, onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import Navbar from "../components/navbar";
 import { LoadingModal } from '../components/loading';
 import Footer from "../components/footer";
+import { ProfileContext, Profile } from "@/context/ProfileContext";
 
-interface Profile {
-  nombre: string;
-  apellido: string;
-  email: string;
-  cedula: string;
-  fecha_nacimiento: string;
-  rol: string;
-  ciudad: string;
-  direccion: string;
-  fecha_creacion: string;
-}
 
-// 1) Creamos y exportamos el contexto
-export const ProfileContext = createContext<Profile | null>(null);
 
 export default function ProtectedLayout({ children }: ProtectedLayoutProps ) {
   const router = useRouter();
