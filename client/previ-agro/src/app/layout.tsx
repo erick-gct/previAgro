@@ -31,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={inter.className}>
-      <body className="font-sans font-sans bg-[rgb(228,231,234)] flex flex-col min-h-screen overflow-x-hiddenn">
+      <body className="font-sans font-sans bg-[rgb(228,231,234)] flex flex-col min-h-screen overflow-x-hidden">
         <main className="flex-grow">{children}</main>
           <Footer />
       </body>
