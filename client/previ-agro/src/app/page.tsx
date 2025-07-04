@@ -20,10 +20,16 @@ export default function Home() {
       } else {
         router.push("/login");
       }
+
+
+     console.log("Home page cargada en Vercel");
+
     });
 
     return () => unsub();
   }, [router]);
+
+  
 
   if (loading) return <p className="text-center mt-10">Cargando...</p>;
 
