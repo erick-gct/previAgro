@@ -8,18 +8,23 @@ import { getIdToken, onAuthStateChanged, User } from "firebase/auth";
 import "react-toastify/dist/ReactToastify.css";
 import { API_URL } from "@/lib/api";
 import { ProfileContext } from "@/context/ProfileContext";
-
+import { LoadingModal } from "@/app/components/loading";
 
 export default function PerfilPage() {
   const profile = useContext(ProfileContext);
 
 
+  // 1) Si todavía no llegó el profile, mostramos un loading
+  if (!profile) {
+    return <LoadingModal />;
+  }
+  
   const [isEditing, setIsEditing] = useState(false);
- const [form, setForm] = useState(() => ({
+  const [form, setForm] = useState(() => ({
     ...profile,
-    fecha_nacimiento: profile.fecha_nacimiento.split('T')[0] || profile.fecha_nacimiento
+    // Si tu API te devuelve "2025-07-04T00:00:00Z", esto extrae "2025-07-04"
+    fecha_nacimiento: profile.fecha_nacimiento.split("T")[0],
   }));
-
 
   //("");
 
