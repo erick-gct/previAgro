@@ -11,7 +11,7 @@ import { ProfileContext, Profile } from "@/context/ProfileContext";
 
 
 
-export default function ProtectedLayout({ children }: ProtectedLayoutProps ) {
+export default function ProtectedLayout({ children }: { children: React.ReactNode } ) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
