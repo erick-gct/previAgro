@@ -8,6 +8,8 @@ import { auth } from '@/lib/firebase';
 import { getIdToken, onAuthStateChanged, User } from "firebase/auth";
 import "react-toastify/dist/ReactToastify.css";
 import { API_URL } from "@/lib/api";
+import { ProfileContext } from "@/context/ProfileContext";
+
 
 export default function PerfilPage() {
   const profile = useContext(ProfileContext);
