@@ -71,8 +71,12 @@ export default function Predictor() {
       const data = await response.json();
       setPredictions(data);
     } catch (err) {
-      toast.error(err.message, {position: "top-right"});
-      setPredictions([]);
+       if (err instanceof Error) {
+          toast.error(err.message, { position: "top-right" });
+        } else {
+            toast.error(String(err), { position: "top-right" });
+          }
+        setPredictions([]);
     } finally {
       setLoading(false);
     }
