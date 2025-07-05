@@ -116,7 +116,9 @@ export default function PerfilPage() {
 
   // 3. Creamos la función para manejar el clic en el ícono
   const handleIconClick = () => {
-    dateInputRef.current?.showPicker();
+     if (!dateInputRef.current) return;
+    dateInputRef.current.focus();        // 1) Enfoca el input
+    dateInputRef.current.showPicker();  
   };
 
   return (
@@ -227,6 +229,7 @@ export default function PerfilPage() {
            {isEditing ? (
               <div className="relative">
               <input
+                ref={dateInputRef}
                 type="date"
                 name="fecha_nacimiento"
                 value={form.fecha_nacimiento}

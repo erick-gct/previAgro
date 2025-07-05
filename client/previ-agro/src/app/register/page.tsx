@@ -239,17 +239,17 @@ export default function RegisterPage() {
             {loading ? 'Registrando...' : 'Registrar'}
           </button>
         </div>
+        
+        <p className="mt-4 text-left text-gray-700">
+        ¿Ya tienes una cuenta creada? {" "}
+          
+           <Link href= "../login" className="font-bold text-green-700 hover:underline">
+            </Link>
+            Inicia sesión aquí
+         </p>
   
       </form>
-      <p className="mb-6 text-center">
-        ¿Ya tienes una cuenta creada?
-        <span className="font-bold" style={{ color: "rgb(27, 94, 32)" }}>
-          {" "}
-          <Link href= "../login" className="p-2 rounded">
-          </Link>
-          Inicia sesión aquí
-        </span>
-      </p>
+  
 
 
        {/* Modal de carga */}
