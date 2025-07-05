@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef} from "react";
 import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import { auth } from '@/lib/firebase';
@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { API_URL } from "@/lib/api";
 import { ProfileContext } from "@/context/ProfileContext";
 import { LoadingModal } from "@/app/components/loading";
+import { FaCalendarAlt } from 'react-icons/fa'; 
 
 export default function PerfilPage() {
   const profile = useContext(ProfileContext);
@@ -30,6 +31,9 @@ export default function PerfilPage() {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  
+  // 2. Creamos la referencia para el input de fecha aquí, junto a los otros hooks
+  const dateInputRef = useRef<HTMLInputElement>(null);
 
   if (!profile) {
     toast.error("Error, No se pudo encontrar el perfil :(", {
@@ -109,6 +113,11 @@ export default function PerfilPage() {
       if (alwaysReadOnly || !isEditing) e.preventDefault();
     },
   });
+
+  // 3. Creamos la función para manejar el clic en el ícono
+  const handleIconClick = () => {
+    dateInputRef.current?.showPicker();
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-200 px-4 py-4">
@@ -216,6 +225,7 @@ export default function PerfilPage() {
               Fecha de Nacimiento
             </label>
            {isEditing ? (
+              <div className="relative">
               <input
                 type="date"
                 name="fecha_nacimiento"
@@ -223,6 +233,12 @@ export default function PerfilPage() {
                 onChange={handleChange}
                 className="w-full p-2 shadow rounded text-black focus:outline-none focus:ring-2 focus:ring-green-500 border bg-gray-200 border-gray-400"
               />
+              <FaCalendarAlt
+                    onClick={handleIconClick} // Asignamos el manejador de clic
+                    className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 cursor-pointer transition-colors hover:text-green-600"
+                />
+              </div>
+
             ) : (
               <input
                 type="text"

@@ -7,6 +7,7 @@ import { LoadingModal } from '../components/loading'; // Importa el componente L
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { API_URL } from "@/lib/api";
+import Link from "next/link";
 
 
 export default function RegisterPage() {
@@ -229,6 +230,7 @@ export default function RegisterPage() {
         </div>
 
         <div className="flex justify-end mt-8">
+
           <button
             type="submit"
             className="bg-green-600 text-white py-2 px-6 rounded hover:bg-green-700 cursor-pointer transition-colors duration-200 shadow-md hover:shadow-lg"
@@ -239,6 +241,16 @@ export default function RegisterPage() {
         </div>
   
       </form>
+      <p className="mb-6 text-center">
+        ¿Ya tienes una cuenta creada?
+        <span className="font-bold" style={{ color: "rgb(27, 94, 32)" }}>
+          {" "}
+          <Link href= "../login" className="p-2 rounded">
+          </Link>
+          Inicia sesión aquí
+        </span>
+      </p>
+
 
        {/* Modal de carga */}
       {loading && <LoadingModal />}

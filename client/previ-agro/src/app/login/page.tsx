@@ -136,7 +136,7 @@ const Login: React.FC = () => {
             <span className="font-bold" style={{ color: "rgb(27, 94, 32)" }}>
               {" "}
               <Link href="../register" className=" p-2 rounded">
-                Haz clic aqui para crearla :D
+                Haz clic aquí para crearla :D
               </Link>
             </span>
           </p>
