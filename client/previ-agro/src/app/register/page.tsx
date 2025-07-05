@@ -230,14 +230,6 @@ export default function RegisterPage() {
         </div>
 
         <div className="flex justify-end mt-8">
-        
-        <p className="mt-4 text-left text-gray-700">
-          ¿Ya tienes una cuenta creada? {" "}
-           <Link href= "../login" className="font-bold text-green-700 hover:underline">
-            Inicia sesión aquí
-            </Link>
-         </p>
-
           <button
             type="submit"
             className="bg-green-600 text-white py-2 px-6 rounded hover:bg-green-700 cursor-pointer transition-colors duration-200 shadow-md hover:shadow-lg"
@@ -246,9 +238,14 @@ export default function RegisterPage() {
             {loading ? 'Registrando...' : 'Registrar'}
           </button>
         </div>
-        
 
-  
+          <p className="mt-4 text-left text-gray-700">
+          ¿Ya tienes una cuenta creada? {" "}
+           <Link href= "../login" className="font-bold text-green-700 hover:underline">
+            Inicia sesión aquí
+            </Link>
+         </p>
+      
       </form>
   
 

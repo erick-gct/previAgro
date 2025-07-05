@@ -98,7 +98,7 @@ export default function PerfilPage() {
 
   // Helper que devulve props para cada input
 
-  const inputProps = (field: string, alwaysReadOnly = false) => ({
+/*   const inputProps = (field: string, alwaysReadOnly = false) => ({
     name: field,
     value: form[field as keyof typeof form] ?? "",
     onChange: handleChange,
@@ -112,13 +112,13 @@ export default function PerfilPage() {
     onMouseDown: (e: any) => {
       if (alwaysReadOnly || !isEditing) e.preventDefault();
     },
-  });
+  }); */
 
   // 3. Creamos la función para manejar el clic en el ícono
   const handleIconClick = () => {
      if (!dateInputRef.current) return;
-    dateInputRef.current.focus();        // 1) Enfoca el input
-    dateInputRef.current.showPicker();  
+    dateInputRef.current?.focus();        // 1) Enfoca el input
+    dateInputRef.current?.showPicker();  
   };
 
   return (
@@ -237,7 +237,10 @@ export default function PerfilPage() {
                 className="w-full p-2 shadow rounded text-black focus:outline-none focus:ring-2 focus:ring-green-500 border bg-gray-200 border-gray-400"
               />
               <FaCalendarAlt
-                    onClick={handleIconClick} // Asignamos el manejador de clic
+                    onClick={() => {
+                      dateInputRef.current?.focus();
+                      dateInputRef.current?.showPicker();
+                     }} // Asignamos el manejador de clic
                     className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 cursor-pointer transition-colors hover:text-green-600"
                 />
               </div>
