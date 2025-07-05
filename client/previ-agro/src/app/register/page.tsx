@@ -230,6 +230,13 @@ export default function RegisterPage() {
         </div>
 
         <div className="flex justify-end mt-8">
+        
+        <p className="mt-4 text-left text-gray-700">
+          ¿Ya tienes una cuenta creada? {" "}
+           <Link href= "../login" className="font-bold text-green-700 hover:underline">
+            Inicia sesión aquí
+            </Link>
+         </p>
 
           <button
             type="submit"
@@ -240,13 +247,7 @@ export default function RegisterPage() {
           </button>
         </div>
         
-        <p className="mt-4 text-left text-gray-700">
-        ¿Ya tienes una cuenta creada? {" "}
-          
-           <Link href= "../login" className="font-bold text-green-700 hover:underline">
-            </Link>
-            Inicia sesión aquí
-         </p>
+
   
       </form>
   
