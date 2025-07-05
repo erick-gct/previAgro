@@ -29,7 +29,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
         const idToken = await user.getIdToken();
 
         // 2) Llama a tu endpoint de perfil
-        const res = await fetch("http://localhost:5000/api/profile", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile`, {
           headers: { Authorization: `Bearer ${idToken}` }
         });
 
@@ -79,7 +79,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
         
         </main>
      
-     
+
       </div>
     </ProfileContext.Provider>
     
