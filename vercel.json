@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "client/previ-agro/next.config.js",
+      "src": "client/previ-agro/next.config.ts",
       "use": "@vercel/next"
     }
   ],
