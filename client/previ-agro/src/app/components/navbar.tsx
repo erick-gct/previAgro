@@ -21,20 +21,6 @@ export default function Navbar({ user }: NavbarProps) {
   const router = useRouter();
   const [nombre, setNombre] = useState("");
 
-/*   const handleLogout = async () => {
-    await signOut(auth);
-    router.push("/login");
-  }; */
-
-/*   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setNombre(user.email?.split("@")[0] || "Usuario"); // puedes personalizar con nombre real si usas Firestore
-      }
-    });
-    return () => unsubscribe();
-  }, []);
- */
   return (
     <aside className="bg-green-600 text-white w-64 h-screen fixed top-0 left-0 flex flex-col p-4 rounded-r-lg shadow-lg">
       <div className="flex items-center justify-between mb-6">
