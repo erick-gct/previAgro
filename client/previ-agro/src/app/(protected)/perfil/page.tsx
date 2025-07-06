@@ -13,7 +13,7 @@ import { FaCalendarAlt } from 'react-icons/fa';
 
 export default function PerfilPage() {
   const profile = useContext(ProfileContext);
-
+  const [form, setForm] = useState({});
 
   // 1) Si todavía no llegó el profile, mostramos un loading
   if (!profile) {
@@ -62,27 +62,28 @@ export default function PerfilPage() {
   };
 
   const formatDateForDisplay = (dateString: string) => {
-  if (!dateString) return "";
-  const date = new Date(dateString);
-  if (isNaN(date.getTime())) return "";
-  // usa toLocaleDateString para que sólo muestre día/mes/año
-  return date.toLocaleDateString("es-EC", {
-    day:   "2-digit",
-    month: "2-digit",
-    year:  "numeric",
-  });
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "";
+    // usa toLocaleDateString para que sólo muestre día/mes/año
+    return date.toLocaleDateString("es-EC", {
+      day:   "2-digit",
+      month: "2-digit",
+      year:  "numeric",
+    });
 };
 
+  
 
   const [isEditing, setIsEditing] = useState(false);
-  const [form, setForm] = useState(() => {
+/*   const [form, setForm] = useState(() => {
   const fecha = formatDateForInput(profile.fecha_nacimiento);
   console.log("useState fecha_nacimiento:", fecha);
-  return {
+    return {
     ...profile,
     fecha_nacimiento: fecha,
   };
-});
+}); */
 
   // 2. Creamos la referencia para el input de fecha aquí, junto a los otros hooks
   const dateInputRef = useRef<HTMLInputElement>(null);
@@ -98,26 +99,38 @@ export default function PerfilPage() {
     return;
   }
 
-  // useEffect para actualizar el form cuando profile cambie
   useEffect(() => {
     if (profile) {
-      const fecha = formatDateForInput(profile.fecha_nacimiento);
-      console.log("useEffect fecha_nacimiento:", fecha);
       setForm({
         ...profile,
-        fecha_nacimiento: profile.fecha_nacimiento
-        ? formatDateForInput(profile.fecha_nacimiento)
-        : "",
+        // **LA CLAVE PARA EL INPUT DE EDICIÓN**
+        // Extraemos solo la parte de la fecha (YYYY-MM-DD) del string ISO.
+        // Esto es lo que el input type="date" necesita y evita el problema de "dd/mm/aaaa".
+        fecha_nacimiento: (profile.fecha_nacimiento || "").split('T')[0],
       });
     }
-  }, [profile]);
+  }, [profile, isEditing]); // Se dispara al cargar y al entrar/salir del modo edición.
+
+
+  // **LA CLAVE PARA MOSTRAR LA FECHA CORRECTA (SIN DESFASE)**
+  const displayDate = (isoString) => {
+    if (!isoString) return "";
+    const date = new Date(isoString);
+    // Usamos timeZone: 'UTC' para forzar a que la fecha se formatee en UTC,
+    // ignorando la zona horaria del navegador y evitando el desfase de un día.
+    return date.toLocaleDateString('es-EC', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: 'UTC',
+    });
+  };
 
  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
-    setError(""); 
     console.log(profile.fecha_nacimiento);
     console.log(profile);
   };
@@ -168,10 +181,6 @@ export default function PerfilPage() {
 
   //Funcion para cancelar la edición y restaurar valores originales
   const handleCancel = () => {
-      setForm({
-      ...profile,
-      fecha_nacimiento: formatDateForInput(profile.fecha_nacimiento)
-    });
     setIsEditing(false);
     setError("");
     setSuccess("");
@@ -216,7 +225,7 @@ export default function PerfilPage() {
             </div>
           ) : (
             <button
-              onClick={handleEditClick}
+              onClick={() => setIsEditing(true)}
               className="flex items-center space-x-2 bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-2xl cursor-pointer"
             >
               <FaEdit />
@@ -225,8 +234,6 @@ export default function PerfilPage() {
           )}
         </div>
 
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        {success && <p className="text-green-600 mb-4">{success}</p>}
         <p className="mb-6 text-gray-800">
           {isEditing
             ? "Modifica tus datos y haz clic en Guardar para aplicar los cambios."
@@ -305,10 +312,7 @@ export default function PerfilPage() {
                 className="w-full p-2 shadow rounded text-black focus:outline-none focus:ring-2 focus:ring-green-500 border bg-gray-200 border-gray-400"
               />
               <FaCalendarAlt
-                    onClick={() => {
-                      dateInputRef.current?.focus();
-                      dateInputRef.current?.showPicker();
-                     }} // Asignamos el manejador de clic
+                    onClick={handleIconClick}
                     className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 cursor-pointer transition-colors hover:text-green-600"
                 />
               </div>
@@ -316,7 +320,7 @@ export default function PerfilPage() {
             ) : (
               <input
                 type="text"
-                value={formatDateForDisplay(profile.fecha_nacimiento)}
+                value={displayDate(profile.fecha_nacimiento)}
                 readOnly
                 className="w-full p-2 shadow rounded bg-white text-black border border-gray-300 bg-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-default"
               />
@@ -325,7 +329,7 @@ export default function PerfilPage() {
           {/* Rol */}
           <div>
             <label className="block mb-1 font-medium text-black">Rol</label>
-                        {isEditing ? (
+              {isEditing ? (
               <select
                 name="rol"
                 value={form.rol}
