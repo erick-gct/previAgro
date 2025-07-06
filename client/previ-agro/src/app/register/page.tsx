@@ -195,12 +195,12 @@ export default function RegisterPage() {
               required
               className="w-full p-2 shadow rounded text-black focus:outline-none focus:ring-2 focus:ring-green-500 border border-gray-300  bg-gray-50"
             >
-              <option value="agricultor">Agricultor</option>
-              <option value="ejecutivo">Ejecutivo</option>
-              <option value="empresario">Empresario</option>
-              <option value="lider tecnico">Líder Técnico</option>
-              <option value="tester">Tester</option>
-              <option value="general">General</option>
+              <option value="Agricultor">Agricultor</option>
+              <option value="Ejecutivo">Ejecutivo</option>
+              <option value="Empresario">Empresario</option>
+              <option value="Lider Tecnico">Líder Técnico</option>
+              <option value="Tester">Tester</option>
+              <option value="General">General</option>
             </select>
           </div>
 
