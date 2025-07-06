@@ -288,7 +288,7 @@ export default function PerfilPage() {
             ) : (
               <input
                 type="text"
-                value={new Date(profile.fecha_nacimiento).toLocaleDateString()}
+                value={formatDateForInput(profile.fecha_nacimiento)}
                 readOnly
                 className="w-full p-2 shadow rounded bg-white text-black border border-gray-300 bg-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-default"
               />
