@@ -13,7 +13,7 @@ import { FaCalendarAlt } from 'react-icons/fa';
 
 export default function PerfilPage() {
   const profile = useContext(ProfileContext);
-  const [form, setForm] = useState<Profile & { fecha_nacimiento: string }>({
+  const [form, setForm] = useState<ProfileContext & { fecha_nacimiento: string }>({
     nombre: "",
     apellido: "",
     cedula: "",
