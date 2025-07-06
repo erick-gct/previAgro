@@ -22,38 +22,47 @@ export default function PerfilPage() {
   
   
   const formatDateForInput = (dateString: string): string => {
-    if (!dateString) return "";
+    console.log("formatDateForInput INPUT:", dateString);
+    if (!dateString) {
+      console.log("formatDateForInput: empty input");
+      return "";
+    }
     
     // Si ya está en formato yyyy-MM-dd, lo devolvemos tal cual
     if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+       console.log("formatDateForInput: already yyyy-MM-dd", dateString);
       return dateString;
     }
 
     try {
-      // Si está en formato ISO con "T"
       if (dateString.includes("T")) {
-        return dateString.split("T")[0];
+        const val = dateString.split("T")[0];
+        console.log("formatDateForInput: ISO with T", val);
+        return val;
       }
-      // Si es otra fecha, convertirla a ISO y tomar la parte de fecha
       const date = new Date(dateString);
-      if (isNaN(date.getTime())) return "";
-      console.log("jajaja", date, dateString);
-      return date.toISOString().split("T")[0];
-      
+      if (isNaN(date.getTime())) {
+        console.log("formatDateForInput: invalid date");
+        return "";
+      }
+      const val = date.toISOString().split("T")[0];
+      console.log("formatDateForInput: parsed date", val);
+      return val;
     } catch (error) {
       console.error("Error formatting date:", error);
       return "";
-    }
+  }
   };
 
   const [isEditing, setIsEditing] = useState(false);
-  const [form, setForm] = useState(() => ({
+  const [form, setForm] = useState(() => {
+  const fecha = formatDateForInput(profile.fecha_nacimiento);
+  console.log("useState fecha_nacimiento:", fecha);
+  return {
     ...profile,
-    // Si tu API te devuelve "2025-07-04T00:00:00Z", esto extrae "2025-07-04"
-    fecha_nacimiento: profile.fecha_nacimiento
-    ? formatDateForInput(profile.fecha_nacimiento)
-    : "",
-  }));
+    fecha_nacimiento: fecha,
+  };
+});
 
   // 2. Creamos la referencia para el input de fecha aquí, junto a los otros hooks
   const dateInputRef = useRef<HTMLInputElement>(null);
@@ -72,6 +81,8 @@ export default function PerfilPage() {
   // useEffect para actualizar el form cuando profile cambie
   useEffect(() => {
     if (profile) {
+      const fecha = formatDateForInput(profile.fecha_nacimiento);
+      console.log("useEffect fecha_nacimiento:", fecha);
       setForm({
         ...profile,
         fecha_nacimiento: profile.fecha_nacimiento
@@ -253,6 +264,7 @@ export default function PerfilPage() {
             </label>
            {isEditing ? (
               <div className="relative">
+                {console.log("INPUT FECHA value:", form.fecha_nacimiento)}
               <input
                 ref={dateInputRef}
                 type="date"
