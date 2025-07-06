@@ -61,6 +61,19 @@ export default function PerfilPage() {
     }
   };
 
+  const formatDateForDisplay = (dateString: string) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "";
+  // usa toLocaleDateString para que sólo muestre día/mes/año
+  return date.toLocaleDateString("es-EC", {
+    day:   "2-digit",
+    month: "2-digit",
+    year:  "numeric",
+  });
+};
+
+
   const [isEditing, setIsEditing] = useState(false);
   const [form, setForm] = useState(() => {
   const fecha = formatDateForInput(profile.fecha_nacimiento);
@@ -192,7 +205,12 @@ export default function PerfilPage() {
             </div>
           ) : (
             <button
-              onClick={() => setIsEditing(true)}
+              onClick={() =>
+                  setForm({
+                    ...profile,
+                    fecha_nacimiento: formatDateForInput(profile.fecha_nacimiento),
+                  });
+                  setIsEditing(true)}
               className="flex items-center space-x-2 bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-2xl cursor-pointer"
             >
               <FaEdit />
@@ -292,7 +310,7 @@ export default function PerfilPage() {
             ) : (
               <input
                 type="text"
-                value={formatDateForInput(profile.fecha_nacimiento)}
+                value={formatDateForDisplay(profile.fecha_nacimiento)}
                 readOnly
                 className="w-full p-2 shadow rounded bg-white text-black border border-gray-300 bg-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-default"
               />
