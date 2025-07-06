@@ -27,14 +27,18 @@ export default function PerfilPage() {
     try {
       // Si ya está en formato ISO con "T", tomar solo la parte de fecha
       if (dateString.includes("T")) {
-        return dateString.split("T")[0];
+        const val = dateString.split("T")[0];
+        console.log("formatDateForInput ISO:", val);
+        return val;
       }
       
       // Si es otra fecha, convertirla a ISO y tomar la parte de fecha
       const date = new Date(dateString);
       if (isNaN(date.getTime())) return "";
       
-      return date.toISOString().split("T")[0];
+       const val = date.toISOString().split("T")[0];
+      console.log("formatDateForInput parsed:", val);
+      return val;
     } catch (error) {
       console.error("Error formatting date:", error);
       return "";
@@ -252,7 +256,7 @@ export default function PerfilPage() {
                 ref={dateInputRef}
                 type="date"
                 name="fecha_nacimiento"
-                value={form.fecha_nacimiento}
+                value={form.fecha_nacimiento || ""}
                 onChange={handleChange}
                 className="w-full p-2 shadow rounded text-black focus:outline-none focus:ring-2 focus:ring-green-500 border bg-gray-200 border-gray-400"
               />
