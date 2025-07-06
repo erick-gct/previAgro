@@ -14,12 +14,16 @@ import { FaCalendarAlt } from 'react-icons/fa';
 export default function PerfilPage() {
   const profile = useContext(ProfileContext);
   const [form, setForm] = useState({
-     const fecha = formatDateForInput(profile.fecha_nacimiento);
-      console.log("useState fecha_nacimiento:", fecha);
-    return {
-      ...profile,
-      fecha_nacimiento: fecha,
-    };
+    nombre: "",
+    apellido: "",
+    cedula: "",
+    email: "",
+    fecha_nacimiento: "",
+    rol: "",
+    ciudad: "",
+    direccion: "",
+    fecha_creacion: "",
+     
   });
 
   // 1) Si todavía no llegó el profile, mostramos un loading
@@ -28,44 +32,16 @@ export default function PerfilPage() {
   }
   
   
+   // Función auxiliar para llevar cualquier ISO o formato a "YYYY-MM-DD"
   const formatDateForInput = (dateString: string): string => {
-       console.log("formatDateForInput INPUT:", dateString);
-
-    if (!dateString) {
-      console.log("formatDateForInput: empty input");
-      return "";
+    if (!dateString) return "";
+    // si viene con T
+    if (dateString.includes("T")) {
+      return dateString.split("T")[0];
     }
-
-    // Si ya está en formato yyyy-MM-dd, lo devolvemos tal cual
-    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-      console.log("formatDateForInput: already yyyy-MM-dd", dateString);
-      return dateString;
-    }
-
-    try {
-      // Si está en formato ISO con "T"
-      if (dateString.includes("T")) {
-        const val = dateString.split("T")[0];
-        console.log("formatDateForInput: ISO with T", val);
-        return val;
-      }
-      // Si es formato RFC1123 u otro, intenta parsear con Date
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) {
-        console.log("formatDateForInput: invalid date");
-        return "";
-      }
-      // Esto SIEMPRE devuelve yyyy-MM-dd en UTC
-      const val = date.toISOString().split("T")[0];
-      // Ajuste para evitar desfase horario:
-      const year = date.getUTCFullYear();
-      const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-      const day = String(date.getUTCDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
-    } catch (error) {
-      console.error("Error formatting date:", error);
-      return "";
-    }
+    const d = new Date(dateString);
+    if (isNaN(d.getTime())) return "";
+    return d.toISOString().split("T")[0];
   };
 
   const formatDateForDisplay = (dateString: string) => {
@@ -106,18 +82,20 @@ export default function PerfilPage() {
     return;
   }
 
+    // Cuando cambie 'profile', inicializamos form
   useEffect(() => {
-    if (profile) {
-      setForm({
-        ...profile,
-        // **LA CLAVE PARA EL INPUT DE EDICIÓN**
-        // Extraemos solo la parte de la fecha (YYYY-MM-DD) del string ISO.
-        // Esto es lo que el input type="date" necesita y evita el problema de "dd/mm/aaaa".
-        fecha_nacimiento: (profile.fecha_nacimiento || "").split('T')[0],
-      });
-    }
-  }, [profile, isEditing]); // Se dispara al cargar y al entrar/salir del modo edición.
-
+    setForm({
+      nombre: profile.nombre,
+      apellido: profile.apellido,
+      cedula: profile.cedula,
+      email: profile.email,
+      fecha_nacimiento: formatDateForInput(profile.fecha_nacimiento),
+      rol: profile.rol,
+      ciudad: profile.ciudad,
+      direccion: profile.direccion,
+      fecha_creacion: formatDateForInput(profile.fecha_creacion),
+    });
+  }, [profile]);
 
   // **LA CLAVE PARA MOSTRAR LA FECHA CORRECTA (SIN DESFASE)**
   const displayDate = (isoString: string) => {
@@ -125,10 +103,11 @@ export default function PerfilPage() {
     const date = new Date(isoString);
     // Usamos timeZone: 'UTC' para forzar a que la fecha se formatee en UTC,
     // ignorando la zona horaria del navegador y evitando el desfase de un día.
+     if (isNaN(date.getTime())) return "";
     return date.toLocaleDateString('es-EC', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
       timeZone: 'UTC',
     });
   };
@@ -144,10 +123,6 @@ export default function PerfilPage() {
 
   // justo debajo de tus otros handlers:
   const handleEditClick = () => {
-    setForm({
-      ...profile,
-      fecha_nacimiento: formatDateForInput(profile.fecha_nacimiento),
-    });
     setIsEditing(true);
   };
 
@@ -188,6 +163,12 @@ export default function PerfilPage() {
 
   //Funcion para cancelar la edición y restaurar valores originales
   const handleCancel = () => {
+      // al cancelar, restauramos desde profile
+    setForm((prev) => ({
+      ...prev,
+      fecha_nacimiento: formatDateForInput(profile.fecha_nacimiento),
+      fecha_creacion: formatDateForInput(profile.fecha_creacion),
+    }));
     setIsEditing(false);
     setError("");
     setSuccess("");
@@ -230,7 +211,7 @@ export default function PerfilPage() {
             </div>
           ) : (
             <button
-              onClick={() => setIsEditing(true)}
+              onClick={handleEditClick}
               className="flex items-center space-x-2 bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-2xl cursor-pointer"
             >
               <FaEdit />
@@ -312,7 +293,7 @@ export default function PerfilPage() {
                 ref={dateInputRef}
                 type="date"
                 name="fecha_nacimiento"
-                value={form.fecha_nacimiento || ""}
+                value={form.fecha_nacimiento }
                 onChange={handleChange}
                 className="w-full p-2 shadow rounded text-black focus:outline-none focus:ring-2 focus:ring-green-500 border bg-gray-200 border-gray-400"
               />
