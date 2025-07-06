@@ -122,6 +122,16 @@ export default function PerfilPage() {
     console.log(profile);
   };
 
+  // justo debajo de tus otros handlers:
+  const handleEditClick = () => {
+    setForm({
+      ...profile,
+      fecha_nacimiento: formatDateForInput(profile.fecha_nacimiento),
+    });
+    setIsEditing(true);
+  };
+
+
   const handleSave = async () => {
     setError("");
    
@@ -206,12 +216,7 @@ export default function PerfilPage() {
             </div>
           ) : (
             <button
-              onClick={() =>
-                  setForm({
-                    ...profile,
-                    fecha_nacimiento: formatDateForInput(profile.fecha_nacimiento),
-                  });
-                  setIsEditing(true)}
+              onClick={handleEditClick}
               className="flex items-center space-x-2 bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-2xl cursor-pointer"
             >
               <FaEdit />
