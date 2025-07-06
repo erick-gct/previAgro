@@ -24,17 +24,39 @@ export default function PerfilPage() {
   const [form, setForm] = useState(() => ({
     ...profile,
     // Si tu API te devuelve "2025-07-04T00:00:00Z", esto extrae "2025-07-04"
-    fecha_nacimiento: profile.fecha_nacimiento.split("T")[0],
+    fecha_nacimiento: formatDateForInput(profile.fecha_nacimiento),
   }));
 
-  //("");
+  // 2. Creamos la referencia para el input de fecha aquí, junto a los otros hooks
+  const dateInputRef = useRef<HTMLInputElement>(null);
+
+
+  const formatDateForInput = (dateString: string): string => {
+  if (!dateString) return "";
+  
+  try {
+    // Si ya está en formato ISO con "T", tomar solo la parte de fecha
+    if (dateString.includes("T")) {
+      return dateString.split("T")[0];
+    }
+    
+    // Si es otra fecha, convertirla a ISO y tomar la parte de fecha
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "";
+    
+    return date.toISOString().split("T")[0];
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return "";
+  }
+};
+
+ 
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   
-  // 2. Creamos la referencia para el input de fecha aquí, junto a los otros hooks
-  const dateInputRef = useRef<HTMLInputElement>(null);
-
+  
   if (!profile) {
     toast.error("Error, No se pudo encontrar el perfil :(", {
       position: "top-right",
@@ -47,7 +69,7 @@ export default function PerfilPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
-    setError(""); // Limpiar error al cambiar un campo
+    setError(""); 
   };
 
   const handleSave = async () => {
@@ -89,30 +111,15 @@ export default function PerfilPage() {
   const handleCancel = () => {
       setForm({
       ...profile,
-      fecha_nacimiento: profile.fecha_nacimiento.split('T')[0] || profile.fecha_nacimiento
+      fecha_nacimiento: formatDateForInput(profile.fecha_nacimiento)
     });
     setIsEditing(false);
     setError("");
     setSuccess("");
   };
 
-  // Helper que devulve props para cada input
+  
 
-/*   const inputProps = (field: string, alwaysReadOnly = false) => ({
-    name: field,
-    value: form[field as keyof typeof form] ?? "",
-    onChange: handleChange,
-    readOnly: alwaysReadOnly || !isEditing,
-    className: [
-      "w-full p-2 shadow rounded text-black focus:outline-none focus:ring-2 focus:ring-green-500 border",
-      alwaysReadOnly || !isEditing
-        ? "bg-gray-50  user-select-none border-gray-300"
-        : "bg-gray-200 border-gray-400",
-    ].join(" "),
-    onMouseDown: (e: any) => {
-      if (alwaysReadOnly || !isEditing) e.preventDefault();
-    },
-  }); */
 
   // 3. Creamos la función para manejar el clic en el ícono
   const handleIconClick = () => {
@@ -250,7 +257,7 @@ export default function PerfilPage() {
                 type="text"
                 value={new Date(profile.fecha_nacimiento).toLocaleDateString()}
                 readOnly
-                className="w-full p-2 shadow rounded bg-white text-black border bg-gray-200 focus:ring-green-500 cursor-default"
+                className="w-full p-2 shadow rounded bg-white text-black border border-gray-300 bg-gray-200 focus:ring-green-500 cursor-default"
               />
             )}
           </div>

@@ -241,7 +241,7 @@ export default function RegisterPage() {
 
           <p className="mt-4 text-left text-gray-700">
           ¿Ya tienes una cuenta creada? {" "}
-           <Link href= "../login" className="font-bold text-green-700 hover:underline">
+           <Link href= "../login" className="font-bold text-green-700 ">
             Inicia sesión aquí
             </Link>
          </p>
