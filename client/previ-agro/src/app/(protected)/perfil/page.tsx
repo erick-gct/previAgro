@@ -45,7 +45,9 @@ export default function PerfilPage() {
   const [form, setForm] = useState(() => ({
     ...profile,
     // Si tu API te devuelve "2025-07-04T00:00:00Z", esto extrae "2025-07-04"
-    fecha_nacimiento: formatDateForInput(profile.fecha_nacimiento),
+    fecha_nacimiento: profile.fecha_nacimiento
+    ? formatDateForInput(profile.fecha_nacimiento)
+    : "",
   }));
 
   // 2. Creamos la referencia para el input de fecha aquí, junto a los otros hooks
@@ -67,7 +69,9 @@ export default function PerfilPage() {
     if (profile) {
       setForm({
         ...profile,
-        fecha_nacimiento: formatDateForInput(profile.fecha_nacimiento),
+        fecha_nacimiento: profile.fecha_nacimiento
+        ? formatDateForInput(profile.fecha_nacimiento)
+        : "",
       });
     }
   }, [profile]);
@@ -78,6 +82,8 @@ export default function PerfilPage() {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
     setError(""); 
+    console.log(profile.fecha_nacimiento);
+    console.log(profile);
   };
 
   const handleSave = async () => {
