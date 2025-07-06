@@ -23,23 +23,26 @@ export default function PerfilPage() {
   
   const formatDateForInput = (dateString: string): string => {
     console.log("formatDateForInput INPUT:", dateString);
+
     if (!dateString) {
       console.log("formatDateForInput: empty input");
       return "";
     }
-    
+
     // Si ya está en formato yyyy-MM-dd, lo devolvemos tal cual
     if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-       console.log("formatDateForInput: already yyyy-MM-dd", dateString);
+      console.log("formatDateForInput: already yyyy-MM-dd", dateString);
       return dateString;
     }
 
     try {
+      // Si está en formato ISO con "T"
       if (dateString.includes("T")) {
         const val = dateString.split("T")[0];
         console.log("formatDateForInput: ISO with T", val);
         return val;
       }
+      // Si es formato RFC1123 u otro, intenta parsear con Date
       const date = new Date(dateString);
       if (isNaN(date.getTime())) {
         console.log("formatDateForInput: invalid date");
@@ -51,7 +54,7 @@ export default function PerfilPage() {
     } catch (error) {
       console.error("Error formatting date:", error);
       return "";
-  }
+    }
   };
 
   const [isEditing, setIsEditing] = useState(false);
