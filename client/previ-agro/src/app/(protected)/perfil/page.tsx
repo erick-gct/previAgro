@@ -83,33 +83,19 @@ export default function PerfilPage() {
   }
 
     // Cuando cambie 'profile', inicializamos form
-  useEffect(() => {
+ useEffect(() => {
+    const parseIsoDate = (iso: string) => iso.split('T')[0];
     setForm({
-      nombre: profile.nombre,
-      apellido: profile.apellido,
-      cedula: profile.cedula,
-      email: profile.email,
-      fecha_nacimiento: formatDateForInput(profile.fecha_nacimiento),
-      rol: profile.rol,
-      ciudad: profile.ciudad,
-      direccion: profile.direccion,
-      fecha_creacion: formatDateForInput(profile.fecha_creacion),
+      ...profile,
+      fecha_nacimiento: parseIsoDate(profile.fecha_nacimiento),
+      fecha_creacion: parseIsoDate(profile.fecha_creacion)
     });
   }, [profile]);
 
   // **LA CLAVE PARA MOSTRAR LA FECHA CORRECTA (SIN DESFASE)**
   const displayDate = (isoString: string) => {
-    if (!isoString) return "";
-    const date = new Date(isoString);
-    // Usamos timeZone: 'UTC' para forzar a que la fecha se formatee en UTC,
-    // ignorando la zona horaria del navegador y evitando el desfase de un día.
-     if (isNaN(date.getTime())) return "";
-    return date.toLocaleDateString('es-EC', {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      timeZone: 'UTC',
-    });
+    const [yyyy, mm, dd] = iso.split('T')[0].split('-');
+    return `${dd}/${mm}/${yyyy}`;
   };
 
  
@@ -166,20 +152,22 @@ export default function PerfilPage() {
       // al cancelar, restauramos desde profile
     setForm((prev) => ({
       ...prev,
-      fecha_nacimiento: formatDateForInput(profile.fecha_nacimiento),
-      fecha_creacion: formatDateForInput(profile.fecha_creacion),
+      fecha_nacimiento: profile.fecha_nacimiento.split('T')[0],
+      fecha_creacion: profile.fecha_creacion.split('T')[0]
     }));
     setIsEditing(false);
     setError("");
     setSuccess("");
   };
 
+  const handleEdit = () => setIsEditing(true);
+
   
   // 3. Creamos la función para manejar el clic en el ícono
   const handleIconClick = () => {
     if (!dateInputRef.current) return;
     dateInputRef.current.focus();        // 1) Enfoca el input
-    dateInputRef.current.showPicker();  
+    dateInputRef.current.showPicker?.();  
   };
 
   return (
@@ -211,7 +199,7 @@ export default function PerfilPage() {
             </div>
           ) : (
             <button
-              onClick={handleEditClick}
+              onClick={handleEdit}
               className="flex items-center space-x-2 bg-yellow-500 hover:bg-yellow-600 text-white p-2 rounded-2xl cursor-pointer"
             >
               <FaEdit />
