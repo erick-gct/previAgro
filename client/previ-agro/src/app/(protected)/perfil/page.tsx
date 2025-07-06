@@ -113,7 +113,7 @@ export default function PerfilPage() {
 
 
   // **LA CLAVE PARA MOSTRAR LA FECHA CORRECTA (SIN DESFASE)**
-  const displayDate = (isoString) => {
+  const displayDate = (isoString: string) => {
     if (!isoString) return "";
     const date = new Date(isoString);
     // Usamos timeZone: 'UTC' para forzar a que la fecha se formatee en UTC,
@@ -187,8 +187,6 @@ export default function PerfilPage() {
   };
 
   
-
-
   // 3. Creamos la función para manejar el clic en el ícono
   const handleIconClick = () => {
     if (!dateInputRef.current) return;
