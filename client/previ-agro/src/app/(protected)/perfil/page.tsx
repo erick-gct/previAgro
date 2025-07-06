@@ -37,7 +37,9 @@ export default function PerfilPage() {
       // Si es otra fecha, convertirla a ISO y tomar la parte de fecha
       const date = new Date(dateString);
       if (isNaN(date.getTime())) return "";
+      console.log("jajaja", date, dateString);
       return date.toISOString().split("T")[0];
+      
     } catch (error) {
       console.error("Error formatting date:", error);
       return "";
