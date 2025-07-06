@@ -83,22 +83,31 @@ export default function PerfilPage() {
   }
 
     // Cuando cambie 'profile', inicializamos form
- useEffect(() => {
-    const parseIsoDate = (iso: string) => iso.split('T')[0];
+  useEffect(() => {
+    // Extrae YYYY-MM-DD o deja si no contiene '-'
+    const parseIso = (s: string) => {
+      if (!s) return '';
+      if (s.includes('T')) return s.split('T')[0];
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+      return s;
+    };
     setForm({
       ...profile,
-      fecha_nacimiento: parseIsoDate(profile.fecha_nacimiento),
-      fecha_creacion: parseIsoDate(profile.fecha_creacion)
+      fecha_nacimiento: parseIso(profile.fecha_nacimiento),
+      fecha_creacion: parseIso(profile.fecha_creacion)
     });
   }, [profile]);
 
-  // **LA CLAVE PARA MOSTRAR LA FECHA CORRECTA (SIN DESFASE)**
- const displayDate = (isoString: string) => {
-  const datePart = isoString.split('T')[0];
-  const [yyyy, mm, dd] = datePart.split('-');
-  return `${dd}/${mm}/${yyyy}`;
-};
 
+ // Formatea YYYY-MM-DD a DD/MM/YYYY
+  const displayDate = (value: string) => {
+    if (!value) return '';
+    if (value.includes('-')) {
+      const [yyyy, mm, dd] = value.split('-');
+      return `${dd}/${mm}/${yyyy}`;
+    }
+    return value; // ya está formateado o es texto
+  };
 
  
 
