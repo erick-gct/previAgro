@@ -24,21 +24,20 @@ export default function PerfilPage() {
   const formatDateForInput = (dateString: string): string => {
     if (!dateString) return "";
     
+    // Si ya está en formato yyyy-MM-dd, lo devolvemos tal cual
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+      return dateString;
+    }
+
     try {
-      // Si ya está en formato ISO con "T", tomar solo la parte de fecha
+      // Si está en formato ISO con "T"
       if (dateString.includes("T")) {
-        const val = dateString.split("T")[0];
-        console.log("formatDateForInput ISO:", val);
-        return val;
+        return dateString.split("T")[0];
       }
-      
       // Si es otra fecha, convertirla a ISO y tomar la parte de fecha
       const date = new Date(dateString);
       if (isNaN(date.getTime())) return "";
-      
-       const val = date.toISOString().split("T")[0];
-      console.log("formatDateForInput parsed:", val);
-      return val;
+      return date.toISOString().split("T")[0];
     } catch (error) {
       console.error("Error formatting date:", error);
       return "";
