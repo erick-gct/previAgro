@@ -178,6 +178,7 @@ export default function PerfilPage() {
   };
 
   return (
+    <>
     <div className="min-h-screen flex items-center justify-center bg-gray-200 px-4 py-4">
           {/* Contenedor del toast */}
         <ToastContainer />
@@ -386,5 +387,6 @@ export default function PerfilPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
