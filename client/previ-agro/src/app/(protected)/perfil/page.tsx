@@ -22,7 +22,7 @@ export default function PerfilPage() {
   
   
   const formatDateForInput = (dateString: string): string => {
-    console.log("formatDateForInput INPUT:", dateString);
+     console.log("formatDateForInput INPUT:", dateString);
 
     if (!dateString) {
       console.log("formatDateForInput: empty input");
