@@ -93,10 +93,12 @@ export default function PerfilPage() {
   }, [profile]);
 
   // **LA CLAVE PARA MOSTRAR LA FECHA CORRECTA (SIN DESFASE)**
-  const displayDate = (isoString: string) => {
-    const [yyyy, mm, dd] = iso.split('T')[0].split('-');
-    return `${dd}/${mm}/${yyyy}`;
-  };
+ const displayDate = (isoString: string) => {
+  const datePart = isoString.split('T')[0];
+  const [yyyy, mm, dd] = datePart.split('-');
+  return `${dd}/${mm}/${yyyy}`;
+};
+
 
  
 
