@@ -22,7 +22,7 @@ export default function PerfilPage() {
   
   
   const formatDateForInput = (dateString: string): string => {
-     console.log("formatDateForInput INPUT:", dateString);
+       console.log("formatDateForInput INPUT:", dateString);
 
     if (!dateString) {
       console.log("formatDateForInput: empty input");
@@ -48,9 +48,13 @@ export default function PerfilPage() {
         console.log("formatDateForInput: invalid date");
         return "";
       }
+      // Esto SIEMPRE devuelve yyyy-MM-dd en UTC
       const val = date.toISOString().split("T")[0];
-      console.log("formatDateForInput: parsed date", val);
-      return val;
+      // Ajuste para evitar desfase horario:
+      const year = date.getUTCFullYear();
+      const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+      const day = String(date.getUTCDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
     } catch (error) {
       console.error("Error formatting date:", error);
       return "";
