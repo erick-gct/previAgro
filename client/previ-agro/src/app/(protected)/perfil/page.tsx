@@ -21,25 +21,25 @@ export default function PerfilPage() {
   }
   
   
-    const formatDateForInput = (dateString: string): string => {
-  if (!dateString) return "";
-  
-  try {
-    // Si ya está en formato ISO con "T", tomar solo la parte de fecha
-    if (dateString.includes("T")) {
-      return dateString.split("T")[0];
+  const formatDateForInput = (dateString: string): string => {
+    if (!dateString) return "";
+    
+    try {
+      // Si ya está en formato ISO con "T", tomar solo la parte de fecha
+      if (dateString.includes("T")) {
+        return dateString.split("T")[0];
+      }
+      
+      // Si es otra fecha, convertirla a ISO y tomar la parte de fecha
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return "";
+      
+      return date.toISOString().split("T")[0];
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "";
     }
-    
-    // Si es otra fecha, convertirla a ISO y tomar la parte de fecha
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return "";
-    
-    return date.toISOString().split("T")[0];
-  } catch (error) {
-    console.error("Error formatting date:", error);
-    return "";
-  }
-};
+  };
 
   const [isEditing, setIsEditing] = useState(false);
   const [form, setForm] = useState(() => ({
@@ -264,7 +264,7 @@ export default function PerfilPage() {
                 type="text"
                 value={new Date(profile.fecha_nacimiento).toLocaleDateString()}
                 readOnly
-                className="w-full p-2 shadow rounded bg-white text-black border border-gray-300 bg-gray-200 focus:ring-green-500 cursor-default"
+                className="w-full p-2 shadow rounded bg-white text-black border border-gray-300 bg-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-default"
               />
             )}
           </div>
