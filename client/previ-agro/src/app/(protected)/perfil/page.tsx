@@ -7,7 +7,7 @@ import { auth } from '@/lib/firebase';
 import { getIdToken, onAuthStateChanged, User } from "firebase/auth";
 import "react-toastify/dist/ReactToastify.css";
 import { API_URL } from "@/lib/api";
-import { ProfileContext } from "@/context/ProfileContext";
+import { ProfileContext, Profile } from "@/context/ProfileContext";
 import { LoadingModal } from "@/app/components/loading";
 import { FaCalendarAlt } from 'react-icons/fa'; 
 
