@@ -264,7 +264,7 @@ export default function PerfilPage() {
             </label>
            {isEditing ? (
               <div className="relative">
-                {console.log("INPUT FECHA value:", form.fecha_nacimiento)}
+              
               <input
                 ref={dateInputRef}
                 type="date"
