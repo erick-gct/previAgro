@@ -13,7 +13,14 @@ import { FaCalendarAlt } from 'react-icons/fa';
 
 export default function PerfilPage() {
   const profile = useContext(ProfileContext);
-  const [form, setForm] = useState({});
+  const [form, setForm] = useState({
+     const fecha = formatDateForInput(profile.fecha_nacimiento);
+      console.log("useState fecha_nacimiento:", fecha);
+    return {
+      ...profile,
+      fecha_nacimiento: fecha,
+    };
+  });
 
   // 1) Si todavía no llegó el profile, mostramos un loading
   if (!profile) {
