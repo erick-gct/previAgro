@@ -178,8 +178,8 @@ export default function PerfilPage() {
   // 3. Creamos la función para manejar el clic en el ícono
   const handleIconClick = () => {
     if (!dateInputRef.current) return;
-    dateInputRef.current?.focus();        // 1) Enfoca el input
-    dateInputRef.current?.showPicker();  
+    dateInputRef.current.focus();        // 1) Enfoca el input
+    dateInputRef.current.showPicker();  
   };
 
   return (
