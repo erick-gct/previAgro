@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState, useRef} from "react";
+import React, { useContext, useState, useRef, useEffect} from "react";
 import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import { auth } from '@/lib/firebase';
@@ -20,18 +20,8 @@ export default function PerfilPage() {
     return <LoadingModal />;
   }
   
-  const [isEditing, setIsEditing] = useState(false);
-  const [form, setForm] = useState(() => ({
-    ...profile,
-    // Si tu API te devuelve "2025-07-04T00:00:00Z", esto extrae "2025-07-04"
-    fecha_nacimiento: formatDateForInput(profile.fecha_nacimiento),
-  }));
-
-  // 2. Creamos la referencia para el input de fecha aquí, junto a los otros hooks
-  const dateInputRef = useRef<HTMLInputElement>(null);
-
-
-  const formatDateForInput = (dateString: string): string => {
+  
+    const formatDateForInput = (dateString: string): string => {
   if (!dateString) return "";
   
   try {
@@ -51,7 +41,15 @@ export default function PerfilPage() {
   }
 };
 
- 
+  const [isEditing, setIsEditing] = useState(false);
+  const [form, setForm] = useState(() => ({
+    ...profile,
+    // Si tu API te devuelve "2025-07-04T00:00:00Z", esto extrae "2025-07-04"
+    fecha_nacimiento: formatDateForInput(profile.fecha_nacimiento),
+  }));
+
+  // 2. Creamos la referencia para el input de fecha aquí, junto a los otros hooks
+  const dateInputRef = useRef<HTMLInputElement>(null);
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -63,6 +61,16 @@ export default function PerfilPage() {
     });
     return;
   }
+
+  // useEffect para actualizar el form cuando profile cambie
+  useEffect(() => {
+    if (profile) {
+      setForm({
+        ...profile,
+        fecha_nacimiento: formatDateForInput(profile.fecha_nacimiento),
+      });
+    }
+  }, [profile]);
 
  
 
@@ -103,7 +111,6 @@ export default function PerfilPage() {
     }catch (e: any) {
        toast.error(e.message, {position: "top-right"});
     }
-    console.log("Guardar cambios", form);
     setIsEditing(false);
   };
 
@@ -123,7 +130,7 @@ export default function PerfilPage() {
 
   // 3. Creamos la función para manejar el clic en el ícono
   const handleIconClick = () => {
-     if (!dateInputRef.current) return;
+    if (!dateInputRef.current) return;
     dateInputRef.current?.focus();        // 1) Enfoca el input
     dateInputRef.current?.showPicker();  
   };
