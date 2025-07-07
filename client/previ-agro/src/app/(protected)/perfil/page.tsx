@@ -126,6 +126,24 @@ export default function PerfilPage() {
     return value; // ya está formateado o es texto
   };
 
+  const formatDateTimeForDisplay = (dateString: string) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "";
+    
+    // Formatear con fecha y hora
+    return date.toLocaleString("es-EC", {
+      day: "2-digit",
+      month: "long", 
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true // Formato 24 horas
+    });
+};
+
+
  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -185,7 +203,7 @@ export default function PerfilPage() {
         // fecha_creacion la dejamos tal como viene
         fecha_creacion: profile.fecha_creacion || ''
       });
-      
+
     setIsEditing(false);
     setError("");
     setSuccess("");
@@ -393,7 +411,7 @@ export default function PerfilPage() {
             </label>
               <input
               type="text"
-              value={new Date(profile.fecha_creacion).toLocaleDateString()}
+              value={formatDateTimeForDisplay(profile.fecha_creacion)}
               readOnly
               className="w-full p-2 shadow rounded bg-white text-black border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-default"
             />
