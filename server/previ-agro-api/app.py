@@ -14,6 +14,25 @@ import statsmodels.api as sm
 import json
 import base64
 
+# Añade esta función al inicio de tu archivo app.py (después de los imports)
+def format_date_for_frontend(date_value):
+    """
+    Convierte cualquier tipo de fecha a formato YYYY-MM-DD para el frontend
+    """
+    if date_value is None:
+        return ""
+    
+    # Si ya es un string, verificar si está en formato correcto
+    if isinstance(date_value, str):
+        return date_value
+    
+    # Si es un objeto date o datetime, convertir a string
+    if hasattr(date_value, 'strftime'):
+        return date_value.strftime('%Y-%m-%d')
+    
+    return str(date_value)
+
+
 # ————— Inicialización de Firebase Admin con fallback local —————
 b64 = os.getenv("FIREBASE_SERVICE_ACCOUNT")
 
@@ -159,28 +178,49 @@ def profile():
       dbname=db_url.path.lstrip("/"),
       sslmode="require"
   )
-    with conn:
-      with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
-          cur.execute("""
-                      SELECT nombre,
-                             apellido,
-                             cedula,
-                             email,
-                             fecha_nacimiento,
-                             rol,
-                             ciudad,
-                             direccion,
-                             fecha_creacion
-                      FROM usuarios
-                      WHERE firebase_uid = %s
-                      """, (uid,))
-          row = cur.fetchone()
 
-    conn.close()
+    try:
+        with conn:
+            with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+                cur.execute("""
+                            SELECT nombre,
+                                    apellido,
+                                    cedula,
+                                    email,
+                                    fecha_nacimiento,
+                                    rol,
+                                    ciudad,
+                                    direccion,
+                                    fecha_creacion
+                            FROM usuarios
+                            WHERE firebase_uid = %s
+                            """, (uid,))
+                row = cur.fetchone()
 
-    if not row:
-        return jsonify({"error": "Usuario no encontrado"}), 404
-    return jsonify(dict(row)), 200
+    
+
+        if not row:
+            return jsonify({"error": "Usuario no encontrado"}), 404
+        
+        # AQUÍ ESTÁ LA CLAVE: Formatear solo fecha_nacimiento antes de enviar al frontend
+        profile_data = dict(row)
+            
+        # Formatear solo fecha_nacimiento (mantenemos fecha_creacion con timestamp completo)
+        profile_data["fecha_nacimiento"] = format_date_for_frontend(profile_data.get("fecha_nacimiento"))
+            
+            # Debug temporal para verificar el formato
+        print("=== DEBUG FECHAS BACKEND ===")
+        print(f"fecha_nacimiento original: {row['fecha_nacimiento']} (tipo: {type(row['fecha_nacimiento'])})")
+        print(f"fecha_nacimiento formateada: {profile_data['fecha_nacimiento']}")
+        print(f"fecha_creacion original: {row['fecha_creacion']} (tipo: {type(row['fecha_creacion'])})")
+        print(f"fecha_creacion (sin formatear): {profile_data['fecha_creacion']}")
+            
+        return jsonify(profile_data), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        conn.close()
 
 
 # --- PUT /api/profile: actualiza los datos del usuario ---
@@ -205,6 +245,17 @@ def update_profile():
 
     if not updates:
         return jsonify({"error": "No hay nada que actualizar"}), 400
+
+    # Validar formato de fecha si se está actualizando
+    if "fecha_nacimiento" in updates:
+        fecha_nacimiento = updates["fecha_nacimiento"]
+        if fecha_nacimiento:
+            try:
+                # Verificar que la fecha esté en formato YYYY-MM-DD
+                datetime.strptime(fecha_nacimiento, '%Y-%m-%d')
+            except ValueError:
+                return jsonify({"error": "El formato de fecha debe ser YYYY-MM-DD"}), 400
+
 
     conn = psycopg2.connect(
         host=db_url.hostname,
@@ -253,6 +304,9 @@ def update_profile():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+    finally:
+        conn.close()
 
 
 # --- NUEVA RUTA PARA PREDICCIONES ---

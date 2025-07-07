@@ -84,6 +84,21 @@ export default function PerfilPage() {
 
     // Cuando cambie 'profile', inicializamos form
   useEffect(() => {
+
+      // Debug para ver qué estás recibiendo
+    console.log('Profile fecha_nacimiento:', profile.fecha_nacimiento);
+    console.log('Type:', typeof profile.fecha_nacimiento);
+    console.log('Profile fecha_creacion:', profile.fecha_creacion);
+
+      if (profile) {
+      console.log('=== DEBUG FECHAS ===');
+      console.log('fecha_nacimiento:', profile.fecha_nacimiento);
+      console.log('typeof:', typeof profile.fecha_nacimiento);
+      console.log('fecha_creacion:', profile.fecha_creacion);
+      console.log('typeof:', typeof profile.fecha_creacion);
+    }
+
+
     // Extrae YYYY-MM-DD o deja si no contiene '-'
     const parseIso = (s: string) => {
       if (!s) return '';
@@ -93,8 +108,10 @@ export default function PerfilPage() {
     };
     setForm({
       ...profile,
-      fecha_nacimiento: parseIso(profile.fecha_nacimiento),
-      fecha_creacion: parseIso(profile.fecha_creacion)
+      // fecha_nacimiento ya viene formateada como YYYY-MM-DD desde el backend
+      fecha_nacimiento: profile.fecha_nacimiento || '',
+      // fecha_creacion viene como timestamp completo, la dejamos tal como está
+      fecha_creacion: profile.fecha_creacion || ''
     });
   }, [profile]);
 
@@ -161,11 +178,14 @@ export default function PerfilPage() {
   //Funcion para cancelar la edición y restaurar valores originales
   const handleCancel = () => {
       // al cancelar, restauramos desde profile
-    setForm((prev) => ({
-      ...prev,
-      fecha_nacimiento: profile.fecha_nacimiento.split('T')[0],
-      fecha_creacion: profile.fecha_creacion.split('T')[0]
-    }));
+    setForm({
+        ...profile,
+        // fecha_nacimiento ya viene en formato correcto desde el backend
+        fecha_nacimiento: profile.fecha_nacimiento || '',
+        // fecha_creacion la dejamos tal como viene
+        fecha_creacion: profile.fecha_creacion || ''
+      });
+      
     setIsEditing(false);
     setError("");
     setSuccess("");
